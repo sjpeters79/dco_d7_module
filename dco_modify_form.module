@@ -1,0 +1,40 @@
+<?php
+/**
+ * @file
+ * Code for the Drupal Camp Ottawa Modify Form Feature
+ */
+
+ /**
+ * Implements hook_form_alter().
+ * Or use hook_form_FORM_ID_alter()
+ */
+function dco_modify_form_form_alter(&$form, &$form_state, $form_id) {
+  // Change fields based on campaign status
+  if ($form_id == 'dco_form_id') {
+
+    // Add field lock validator
+    $form['#validate'][] = '_dco_modify_form_validate_publish_form';
+
+    $lock_fields = _dco_modify_form_locked_on_publish();
+    foreach ($lock_fields as $field) {
+      $form[$field]['#disabled'] = TRUE;
+    }
+  }
+
+  if (isset($form['dco_date'])) {
+    $form['dco_date']['#element_validate'][] = '_dco_modify_form_validate_date';
+  }
+}
+
+
+function _dco_modify_form_validate_publish_form($form, $form_state) {
+
+}
+
+function _dco_modify_form_locked_on_publish($form, $form_state) {
+
+}
+
+function _dco_modify_form_validate_date($form, $form_state) {
+
+}
