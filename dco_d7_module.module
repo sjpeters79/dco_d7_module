@@ -5,35 +5,29 @@
  */
 
  /**
- * Implements hook_form_alter().
- * Or use hook_form_FORM_ID_alter()
+ * Implements hook_form_FORM_ID_alter()
+ * See https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_form_FORM_ID_alter/7.x
  */
-function dco_d7_module_form_alter(&$form, &$form_state, $form_id) {
-  // Change fields based on campaign status
-  if ($form_id == 'dco_form_id') {
-
-    // Add field lock validator
-    $form['#validate'][] = '_dco_d7_module_validate_publish_form';
-
-    //check if published
-    $lock_fields = _dco_d7_module_locked_on_publish();
-    foreach ($lock_fields as $field) {
-      $form[$field]['#disabled'] = TRUE;
+function dco_d7_module_form_article_node_form_alter(&$form, &$form_state, $form_id) {
+  //check if published
+  if (isset($form['#node'])) {
+    if ($form['#node']->status) {
+      $lock_fields = _dco_d7_module_locked_on_publish();
+      foreach ($lock_fields as $field) {
+        $form[$field]['#disabled'] = TRUE;
+      }
     }
   }
 }
 
-
-function _dco_d7_module_validate_publish_form($form, $form_state) {
-
-}
-
 /**
- * Locked field on publishing
+ * Locked field when node is published
  */
-function _dco_d7_module_locked_on_publish($form, $form_state) {
+function _dco_d7_module_locked_on_publish() {
   return array(
     'title',
-    'body',    
+    'body',
+    'field_tags',
+    'field_image',    
   );
 }
